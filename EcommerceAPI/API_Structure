@@ -1,0 +1,14 @@
+
+/auth
+    /register - post method - signup - {userName: ..., email: ..., password: ...}
+
+    /login - post method - sign in - {email: ..., password: ...}
+
+
+/user
+    /:id - put method - update user (id) info - {header: token, body: {userName:..., password: ...}}
+
+    /:id - get method - get user info
+
+    / - get method - get all users info (only for admin)
+        if (req.query.new) -> only get first 5 users
