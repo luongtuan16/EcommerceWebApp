@@ -18,6 +18,7 @@ export default function User() {
   const path = useLocation().pathname.split('/');
   const user = useSelector(state => state.listUsers.users
     .find(user => user._id === path[path.length - 1]));
+    const token = useSelector(state => state.user.curUser.token);
   //const id = path[path.length-1];
   const [name, setName] = useState(user.userName);
   const [email, setEmail] = useState(user.email);
@@ -84,7 +85,7 @@ export default function User() {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             //console.log('File available at', downloadURL);
             updateUserInfo(dispatch, user._id,
-              { ...user, userName: name, email, avatar: downloadURL });
+              { ...user, userName: name, email, avatar: downloadURL }, token);
             setLog('Update Successful');
             setAvatar(null);
           });
@@ -92,7 +93,7 @@ export default function User() {
       );
     } else{
       updateUserInfo(dispatch, user._id,
-        { ...user, userName: name, email });
+        { ...user, userName: name, email }, token);
       setLog('Update Successful');
     }
   }

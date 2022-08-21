@@ -10,17 +10,18 @@ export default function ProductList() {
 
   const dispatch = useDispatch();
   const data = useSelector(state => state.listProducts.products);
+  const token = useSelector(state => state.user.curUser.token);
   //console.log(data);
   useEffect(() => {
-    getListProducts(dispatch);
+    getListProducts(dispatch, token);
   }, [dispatch]);
 
   const handleRefresh = () => {
-    getListProducts(dispatch);
+    getListProducts(dispatch, token);
   }
 
   const handleDelete = (_id) => {
-    deleteProduct(dispatch, _id);
+    deleteProduct(dispatch, _id, token);
     //setData(data.filter((item) => item._id !== id));
   };
   const columns = [

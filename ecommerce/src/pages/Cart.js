@@ -9,8 +9,15 @@ import { getCart, updateCart } from '../redux/apiCalls'
 import { useDispatch, useSelector } from 'react-redux'
 import CartItem from '../components/CartItem'
 import { useNavigate } from 'react-router-dom'
-import { decrease } from '../redux/cartSlice'
-
+import { decrease, setAmount } from '../redux/cartSlice'
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import { userRequest } from '../requestMethods'
 const Container = styled.div`
     
 `
@@ -81,9 +88,12 @@ export default function Cart() {
     const [total, setTotal] = useState(0);
     const [ship, setShip] = useState(20);
     const [discount, setDiscount] = useState(20);
-
+    const [openDialog, setOpenDialog] = useState(false);
+    const [ordering, setOrdering] = useState(false);
+    const [address, setAddress] = useState('');
     const dispatch = useDispatch();
     const userId = useSelector(state => state.user.curUser._id);
+    const token = useSelector(state => state.user.curUser.token);
     //console.log('cart page re-render');
 
     useEffect(() => {
@@ -97,7 +107,7 @@ export default function Cart() {
             navigate('/login');
         } else {
             const res = []
-            getCart(userId, res)
+            getCart(userId, res, token)
                 .then(() => {
                     setCart(res);
                 })
@@ -115,7 +125,7 @@ export default function Cart() {
             quantity: item.quantity
         }));
 
-        updateCart(userId, products)
+        updateCart(userId, products, token)
             .then(() => setCart(newCart))
             .catch(err => console.log(err));
     }
@@ -129,7 +139,7 @@ export default function Cart() {
             size: item.size,
             quantity: item.quantity
         }));
-        updateCart(userId, products)
+        updateCart(userId, products, token)
             .then(() => {
                 setCart(newCart);
                 dispatch(decrease());
@@ -137,6 +147,40 @@ export default function Cart() {
             .catch(err => console.log(err));
     }
 
+    const handleClickCheckout = () => {
+        setOpenDialog(true);
+    }
+    const handleCheckout = async () => {
+        if (total > 0 && address){
+            //console.log(cart);
+            setOrdering(true);
+            const orderProducts = cart.map(item => {
+                return {
+                    productId: item.id,
+                    quantity: item.quantity
+                }
+            })
+            const res = await userRequest(token).post('/order', {
+                userId,
+                products: orderProducts,
+                amount: total,
+                address,
+                status: "pending"
+            });
+            if (res.status === 200) {
+                setOpenDialog(false);
+                setOrdering(false);
+                await userRequest(token).delete(`/cart/${userId}`);
+                setCart([]);
+                dispatch(setAmount(0));
+                alert("Order Successful!");
+            }else {
+                console.log(res);
+                alert("Order failed");
+                setOrdering(false);
+            }
+        }
+    }
     return (
         <Container>
             <NavBar />
@@ -147,7 +191,7 @@ export default function Cart() {
                     <TopBtn type='white'>CONTINUE SHOPPING</TopBtn>
                     <TopText>Shopping Bag (2)</TopText>
                     <TopText>Your Wishlist (0)</TopText>
-                    <TopBtn>CHECKOUT NOW</TopBtn>
+                    <TopBtn onClick={handleClickCheckout}>CHECKOUT NOW</TopBtn>
                 </TopWrap>
                 <BottomWrap>
                     <ProductWrap>
@@ -181,9 +225,32 @@ export default function Cart() {
                             <Price>Total</Price>
                             <Price>{`$ ${total + ship - discount}`}</Price>
                         </SummaryItem>
-                        <TopBtn type='bottom'>CHECKOUT NOW</TopBtn>
+                        <TopBtn onClick={handleClickCheckout} type='bottom'>CHECKOUT NOW</TopBtn>
                     </Summary>
                 </BottomWrap>
+                <Dialog
+                    fullWidth={true}
+                    open={openDialog} onClose={() => setOpenDialog(false)}>
+                    <DialogTitle>CHECKOUT</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Your order: $ {total}
+                        </DialogContentText>
+                        <TextField
+                            autoFocus
+                            value={address}
+                            onChange={e => setAddress(e.target.value)}
+                            margin="dense"
+                            label="Your Address"
+                            fullWidth
+                            variant="standard"
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button  onClick={() => setOpenDialog(false)}>Cancel</Button>
+                        <Button disabled={ordering} onClick={handleCheckout}>Checkout</Button>
+                    </DialogActions>
+                </Dialog>
             </Wrapper>
             <Newsletter />
             <Footer />

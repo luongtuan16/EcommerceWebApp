@@ -92,7 +92,7 @@ export default function Login() {
   const handleSubmit = e => {
     e.preventDefault();
     dispatch(loginStart());
-    //console.log({ email, password });
+    console.log({ email, password });
 
     publicRequest.post('/auth/login', {
       email,

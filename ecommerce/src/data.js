@@ -1,7 +1,29 @@
+export const categories = [
+    {
+        title: 'Man Fashion',
+        img: 'https://mcdn.nhanh.vn/store/25618/bn/sb_1605548009_687.jpg',
+        category: 'man'
+    },
+    {
+        title: 'Female Fashion',
+        img: 'https://i.pinimg.com/236x/83/c1/9a/83c19ab0658b8eb2d0fb0d723e6035ae.jpg', 
+        category: 'woman'
+    },
+    {
+        title: 'PANT',
+        img: 'https://mcdn.nhanh.vn/store/25618/ps/20201011/4db9715e5a64a53afc75.jpg',
+        category: 'pant'
+    },
+    {
+        title: 'Jacket',
+        img: 'https://mcdn.nhanh.vn/store/25618/ps/20220103/6.jpg',
+        category: 'jacket'
+    }
+]
 export const data = [
     {
         title: 'BLAZER',
-        desc: 'Blazer Han Quoc so 1 Viet Nam',
+        desc: 'Blazer Big Size',
         img: 'https://mcdn.nhanh.vn/store/25618/bn/sb_1605548009_687.jpg',
         bg: 'tear',
         category: 'woman'
@@ -10,25 +32,24 @@ export const data = [
     },
     {
         title: 'SWEATER',
-        desc: 'Sweater Han Quoc so 1 Viet Nam',
+        desc: 'Sweater Korea Oversize',
         img: 'https://mcdn.nhanh.vn/store/25618/bn/sb_1605549342_138.jpg',
         bg: 'white',
         category: 'woman'
     },
     {
         title: 'KAKI PANT',
-        desc: 'Blazer Han Quoc so 1 Viet Nam',
+        desc: 'Fashin Pant For Everyone',
         img: 'https://mcdn.nhanh.vn/store/25618/ps/20201011/4db9715e5a64a53afc75.jpg',
         bg: 'white',
         category: 'woman'
     },
     {
         title: 'JACKET',
-        desc: 'Jacket Jacklane Viet Nam',
+        desc: 'Jacket Jacklane Vietnam',
         img: 'https://mcdn.nhanh.vn/store/25618/ps/20220103/6.jpg',
         bg: 'white'
     }
-
 ]
 
 export const products = [

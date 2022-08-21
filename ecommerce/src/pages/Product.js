@@ -161,7 +161,7 @@ export default function Product() {
                     color,
                     size,
                     quantity
-                });
+                }, user.token);
                 setAction("action");
                 setTimeout(() => {
                     dispatch(increase());

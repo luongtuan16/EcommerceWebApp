@@ -10,9 +10,9 @@ import {
 import { error, getSuccess, start, removeUser, updateUser, addOneUser } from "./listUserSlice";
 
 //user
-export const getListUsers = (dispatch) => {
+export const getListUsers = (dispatch, token) => {
     dispatch(start());
-    userRequest.get('/user')
+    userRequest(token).get('/user')
         .then(res => {
             dispatch(getSuccess(res.data));
 
@@ -21,10 +21,11 @@ export const getListUsers = (dispatch) => {
             console.log('Get users fail ', err);
         });
 }
-export const createUser = async (dispatch, info) => {
+
+export const createUser = async (dispatch, info,token) => {
     let err;
     dispatch(start());
-    await userRequest.post('/auth/register', info)
+    await userRequest(token).post('/auth/register', info)
         .then(res => {
             //push new user info to list user state
             dispatch(addOneUser(res.data));
@@ -39,9 +40,9 @@ export const createUser = async (dispatch, info) => {
         resolve('Success');
     })
 }
-export const deleteUser = (dispatch, id) => {
+export const deleteUser = (dispatch, id, token) => {
     dispatch(start());
-    userRequest.delete(`/user/${id}`)
+    userRequest(token).delete(`/user/${id}`)
         .then(res => {
             dispatch(removeUser(id));
         }).catch(err => {
@@ -50,9 +51,9 @@ export const deleteUser = (dispatch, id) => {
         });
 }
 
-export const updateUserInfo = (dispatch, id, info) => {
+export const updateUserInfo = (dispatch, id, info, token) => {
     dispatch(start());
-    userRequest.put(`/user/${id}`, {
+    userRequest(token).put(`/user/${id}`, {
         ...info
     }).then(res => {
         dispatch(updateUser({ id, info }));
@@ -63,9 +64,9 @@ export const updateUserInfo = (dispatch, id, info) => {
 }
 
 //product
-export const getListProducts = (dispatch) => {
+export const getListProducts = (dispatch, token) => {
     dispatch(startp());
-    userRequest.get('/product')
+    userRequest(token).get('/product')
         .then(res => {
             dispatch(getSuccessp(res.data));
         }).catch(err => {
@@ -73,10 +74,10 @@ export const getListProducts = (dispatch) => {
             console.log('Get products fail ', err);
         });
 }
-export const createProduct = async (dispatch, info) => {
+export const createProduct = async (dispatch, info, token) => {
     let err='';
     dispatch(startp());
-    await userRequest.post('/product', info)
+    await userRequest(token).post('/product', info)
         .then(res => {
             //push new user info to list product state
             console.log(res);
@@ -92,9 +93,9 @@ export const createProduct = async (dispatch, info) => {
         resolve('Success');
     })
 }
-export const deleteProduct = (dispatch, id) => {
+export const deleteProduct = (dispatch, id, token) => {
     dispatch(startp());
-    userRequest.delete(`/product/${id}`)
+    userRequest(token).delete(`/product/${id}`)
         .then(res => {
             dispatch(removeProduct(id));
         }).catch(err => {
@@ -103,9 +104,9 @@ export const deleteProduct = (dispatch, id) => {
         });
 }
 
-export const updateProductInfo = (dispatch, id, info) => {
+export const updateProductInfo = (dispatch, id, info, token) => {
     dispatch(startp());
-    userRequest.put(`/product/${id}`, {
+    userRequest(token).put(`/product/${id}`, {
         ...info
     }).then(res => {
         dispatch(updateProduct({ id, info }));

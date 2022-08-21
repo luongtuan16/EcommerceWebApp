@@ -11,17 +11,18 @@ import firebaseApp from '../../firebase'
 import { updateProductInfo } from "../../redux/apiCalls";
 
 export default function Product() {
-
     const path = useLocation().pathname.split('/');
     const product = useSelector(state => state.listProducts.products
         .find(product => product._id === path[path.length - 1]));
-    //console.log(product);
+    const token = useSelector(state => state.user.curUser.token);
 
     const [name, setName] = useState(product.name);
     const [desc, setDesc] = useState(product.desc);
     const [stock, setStock] = useState(product.inStock);
     const [price, setPrice] = useState(product.price);
-    const [categories, setCategories] = useState(product.categories);
+    const [categories, setCategories] = useState(product.categories.toString());
+    const [size, setSize] = useState(product.size.toString());
+    const [color, setColor] = useState(product.color.toString());
     const [file, setFile] = useState();
     //const [active, setActive] = useState('');
     const [log, setLog] = useState('');
@@ -82,9 +83,9 @@ export default function Product() {
                             inStock: stock,
                             img: downloadURL,
                             price,
-                            categories: categories.trim().split(',').map(item => item.trim()),
+                            categories: categories?.trim()?.split(',').map(item => item.trim()),
                             desc,
-                        });
+                        }, token);
                         setLog('Update Successful');
                         setFile(null);
                     });
@@ -96,9 +97,11 @@ export default function Product() {
                 name,
                 inStock: stock,
                 price,
-                categories: categories.trim().split(',').map(item => item.trim()),
+                categories: categories?.trim()?.split(',')?.map(item => item.trim()),
+                size: size?.trim()?.split(',')?.map(item => item.trim()),
+                color: color?.trim()?.split(',')?.map(item => item.trim()),
                 desc,
-            });
+            }, token);
             setLog('Update Successful');
         }
     }
@@ -162,6 +165,14 @@ export default function Product() {
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
                         </select>
+                        
+                            <label>Color</label>
+                            <input
+                                value={color}
+                                onChange={e => setColor(e.target.value)}
+                                type="text" placeholder="black,white,yellow"
+                            />
+                       
                     </div>
                     <div className="productFormMiddle">
                         <div className="updateProductItem">
@@ -178,6 +189,14 @@ export default function Product() {
                                 value={categories}
                                 onChange={e => setCategories(e.target.value)}
                                 type="text" placeholder="man,woman,shirt"
+                            />
+                        </div>
+                        <div className="updateProductItem">
+                            <label>Size</label>
+                            <input
+                                value={size}
+                                onChange={e => setSize(e.target.value)}
+                                type="text" placeholder="M,L,XL"
                             />
                         </div>
                         <div className="updateProductItem">

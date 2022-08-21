@@ -54,7 +54,7 @@ export default function ProductList() {
             <NavBar />
             <Announcement />
             <Wrapper>
-                <Title>Jacket</Title>
+                <Title>LIST PRODUCTS</Title>
                 <Wrap>
                     <FilterWrap>
                         <FilterContent>Filter Products</FilterContent>

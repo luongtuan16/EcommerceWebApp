@@ -1,6 +1,6 @@
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createProduct } from "../../redux/apiCalls";
 import firebaseApp from '../../firebase'
 import "./newProduct.css";
@@ -8,6 +8,8 @@ import "./newProduct.css";
 export default function NewProduct() {
 
   const [name, setName] = useState('');
+  const [sizes, setSizes] = useState('');
+  const [colors, setColors] = useState('');
   const [desc, setDesc] = useState('');
   const [stock, setStock] = useState('');
   const [price, setPrice] = useState(0);
@@ -15,7 +17,7 @@ export default function NewProduct() {
   const [file, setFile] = useState();
   //const [active, setActive] = useState('');
   const [log, setLog] = useState({});
-
+  const token = useSelector(state => state.user.curUser.token);
   const dispatch = useDispatch();
   const storage = getStorage(firebaseApp);
   //const logRef = useRef();
@@ -72,8 +74,10 @@ export default function NewProduct() {
               img: downloadURL,
               price,
               categories: categories.trim().split(',').map(item => item.trim()),
+              size: sizes.trim().split(',').map(item => item.trim()),
+              color: colors.trim().split(',').map(item => item.trim()),
               desc,
-            }).then(res => {
+            }, token).then(res => {
               setLog({ type: 'success', text: 'Success!' });
             }).catch(e => {
               setLog({ type: 'error', text: 'Fail!' })
@@ -101,7 +105,7 @@ export default function NewProduct() {
           <input
             value={name}
             onChange={e => setName(e.target.value)}
-            type="text" placeholder="Apple Airpods"
+            type="text" placeholder="Sweater Oversize"
           />
         </div>
         <div className="addProductItem">
@@ -118,6 +122,22 @@ export default function NewProduct() {
             value={categories}
             onChange={e => setCategories(e.target.value)}
             type="text" placeholder="man,woman,shirt"
+          />
+        </div>
+        <div className="addProductItem">
+          <label>Colors</label>
+          <input
+            value={colors}
+            onChange={e => setColors(e.target.value)}
+            type="text" placeholder="black,white,gray"
+          />
+        </div>
+        <div className="addProductItem">
+          <label>Sizes</label>
+          <input
+            value={sizes}
+            onChange={e => setSizes(e.target.value)}
+            type="text" placeholder="M,L,XL"
           />
         </div>
         <div className="addProductItem">
@@ -143,7 +163,7 @@ export default function NewProduct() {
             <option value="no">No</option>
           </select>
         </div>
-        <span style={{display: 'block'}} className = {`${log.type}log`}>{log.text}</span>
+        <span style={{ display: 'block' }} className={`${log.type}log`}>{log.text}</span>
         <button onClick={handleCreate} className="addProductButton">Create</button>
       </form>
     </div>

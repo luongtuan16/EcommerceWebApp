@@ -9,17 +9,17 @@ export default function UserList() {
 
   const dispatch = useDispatch();
   const data = useSelector(state => state.listUsers.users);
-
+  const token = useSelector(state => state.user.curUser.token);
   useEffect(() => {
-    getListUsers(dispatch);
+    getListUsers(dispatch, token);
   }, [dispatch]);
 
   const handleRefresh = () => {
-    getListUsers(dispatch);
+    getListUsers(dispatch, token);
   }
 
   const handleDelete = (_id) => {
-    deleteUser(dispatch, _id);
+    deleteUser(dispatch, _id, token);
     //setData(data.filter((item) => item._id !== id));
   };
 

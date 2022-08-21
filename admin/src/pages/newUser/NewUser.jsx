@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import "./newUser.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createUser } from "../../redux/apiCalls";
 
 export default function NewUser() {
@@ -12,7 +12,7 @@ export default function NewUser() {
   //const [active, setActive] = useState('yes');
   const [gender, setGender] = useState('');
   const [log, setLog] = useState('');
-
+  const token = useSelector(state => state.user.curUser.token);
   const dispatch = useDispatch();
   const logRef = useRef();
 
@@ -26,7 +26,7 @@ export default function NewUser() {
       //active,
       //address,
       //gender
-    }).then(res => {
+    }, token).then(res => {
       console.log(res)
       setLog('Success');
     }).catch(err => {

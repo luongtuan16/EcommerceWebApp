@@ -99,8 +99,9 @@ const Dropdown = styled.div`
   z-index: 1;
 `;
 
-const Logout = styled.span`
+const Logout = styled.p`
   font-weight: 600;
+  padding: 5px 1px;
 `;
 
 export default function NavBar() {
@@ -133,7 +134,7 @@ export default function NavBar() {
     if (user._id) {
       // console.log('fetch cart')
       const cart = [];
-      getCart(user._id, cart)
+      getCart(user._id, cart, user.token)
         .then(() => dispatch(setAmount(cart.length)))
         .catch(err => console.log(err));
     } else
@@ -144,6 +145,10 @@ export default function NavBar() {
     e.preventDefault();
     if (search)
       navigate(`/product-list/search/${search}`);
+  }
+
+  const handleViewListOrder = () => {
+    navigate('/order');
   }
   return (
     <Container>
@@ -181,6 +186,7 @@ export default function NavBar() {
         {user.avatar && <MenuItem style={{ flexDirection: 'column', position: 'relative' }}>
           <Avatar onClick={handleClick} src={user.avatar} alt="" />
           {toggle && <Dropdown>
+            <Logout onClick={handleViewListOrder}>Orders</Logout>
             <Logout onClick={handleLogout}>Logout</Logout>
           </Dropdown>}
         </MenuItem>}

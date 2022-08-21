@@ -1,11 +1,11 @@
-
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { mobile } from '../responsive'
-import {publicRequest} from '../requestMethods'
+import { publicRequest } from '../requestMethods'
 import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { loginError, loginStart, loginSuccess } from '../redux/userSlice'
+import { useSelect } from '@mui/base'
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -84,26 +84,30 @@ export default function Register() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const isFetching = useSelector(state => state.user.isFetching);
 
   const handleSubmit = e => {
     e.preventDefault();
+    if (!email || !password || !name || !password2){
+      setErrLog('Please fill all informations!');
+      return;
+    }
     if (password !== password2)
       setErrLog('Wrong password');
-    else{
+    else {
       setErrLog('');
       dispatch(loginStart());
 
       publicRequest.post('/auth/register', {
         userName: name,
-        email, 
+        email,
         password
       }).then(res => {
-        navigate('/');
-        dispatch(loginSuccess(res.data));
-      }).catch( e => {
+        dispatch(loginSuccess({}));
+        navigate('/login');
+      }).catch(e => {
         setErrLog('Register fail');
         console.log(e);
-        dispatch(loginError());
       });
     }
     console.log(name, email, password, password2);
@@ -139,11 +143,11 @@ export default function Register() {
             onChange={e => setPassword2(e.target.value)}
           />
         </PasswordWrap>
-        <span style = {{color: 'red', textAlign: 'center', marginBottom: '10px'}}>
+        <span style={{ color: 'red', textAlign: 'center', marginBottom: '10px' }}>
           {errLog}</span>
         <Policy>By clicking Sign Up, you agree to our
           <b>Terms</b>, <b>Data Policy</b> and <b>Cookie Policy</b>. You may receive SMS notifications from us and can opt out at any time.</Policy>
-        <SignUpBtn onClick={handleSubmit}>Sign Up</SignUpBtn>
+        <SignUpBtn disabled={isFetching} onClick={handleSubmit}>Sign Up</SignUpBtn>
       </Wrapper>
     </Container>
   )

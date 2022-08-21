@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Product from "./pages/Product";
 import ProductList from "./pages/ProductList";
 import Register from "./pages/Register";
+import ListOrder from "./pages/ListOrder";
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
         <Route path='/product-list/:category' element={<ProductList />} />
         <Route path='/product-list' element={<ProductList />} />
         <Route path='/product/:id' element={<Product />} />
+        <Route path='/order' element={!user ? <Navigate to='/login'/> :<ListOrder/>} />
       </Routes>
     </div>
   );

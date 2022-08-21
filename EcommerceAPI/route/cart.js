@@ -26,9 +26,10 @@ router.get('/:id', verifyTokenAndPermission, (req, res) => {
     //console.log('get-cart');
     Cart.findOne({ userId: req.params.id },
         (err, cart) => {
-            //console.log(err, '123')
-            if (err || !cart)
+            if (err)
                 res.status(400).json('Get Cart Failed');
+            else if (!cart)
+                res.status(200).json({});
             else
                 res.status(200).json(cart._doc);
         });
@@ -50,7 +51,7 @@ router.get('/', verifyAdminToken, async (req, res) => {
 
 //create cart
 router.post('/', verifyToken, (req, res) => {
-    console.log('add cart');
+    //console.log('add cart');
     const cart = new Cart({
         ...req.body,
         userId: req.data.id
@@ -62,7 +63,7 @@ router.post('/', verifyToken, (req, res) => {
 });
 
 //delete user cart
-router.delete('/:id', verifyAdminToken, (req, res) => {
+router.delete('/:id', verifyTokenAndPermission, (req, res) => {
     Cart.findOneAndDelete({ userId: req.params.id },
         (err, data) => {
             err && res.status(400).json('Delete Cart Failed');

@@ -1,27 +1,27 @@
 import { publicRequest, userRequest } from "../requestMethods"
 
-export const addToCart = async (userId, product) => {
-    const cart = await userRequest().get(`/cart/${userId}`);
+export const addToCart = async (userId, product, token) => {
+    const cart = await userRequest(token).get(`/cart/${userId}`);
     //console.log(cart);
-    if (cart.data) {
+    if (cart.data.products) {
         let index = -1;
         //check if this product already exist in cart
         cart.data.products.forEach((element, i) => {
-            if (element.productId === product._id 
+            if (element.productId === product._id
                 && element.color === product.color
                 && element.size === product.size)
                 index = i;
         });
 
-        if (index >= 0){
+        if (index >= 0) {
             //just update quantity
             cart.data.products[index].quantity += product.quantity;
-            await userRequest().put(`/cart/${userId}`, { 
+            await userRequest(token).put(`/cart/${userId}`, {
                 products: cart.data.products
             })
         }
         //add product
-        else await userRequest().put(`/cart/${userId}`, {
+        else await userRequest(token).put(`/cart/${userId}`, {
             userId,
             products: [...cart.data.products,
             {
@@ -32,7 +32,7 @@ export const addToCart = async (userId, product) => {
             }]
         })
     } else {
-        await userRequest().post('/cart', {
+        await userRequest(token).post('/cart', {
             products: [{
                 productId: product._id,
                 quantity: product.quantity,
@@ -56,10 +56,12 @@ const getProduct = async productId => {
     return product;
 }
 
-export const getCart = async (userId, cart) => {
+export const getCart = async (userId, cart, token) => {
     //const cart = []
-    const res = await userRequest().get(`/cart/${userId}`);
+    const res = await userRequest(token).get(`/cart/${userId}`);
     //console.log(res.data)
+    if (!res.data?.products?.length)
+        return;
     for (const item of res.data.products) {
         //console.log(product);
         const product = await getProduct(item.productId)
@@ -72,6 +74,6 @@ export const getCart = async (userId, cart) => {
     //return cart;
 }
 
-export const updateCart = (userId, products) => {
-    return userRequest().put(`/cart/${userId}`, { products: products })
+export const updateCart = (userId, products, token) => {
+    return userRequest(token).put(`/cart/${userId}`, { products: products })
 }
